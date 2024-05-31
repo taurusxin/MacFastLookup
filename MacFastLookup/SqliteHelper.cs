@@ -18,6 +18,11 @@ namespace MacFastLookup
             connection.Open();
         }
 
+        public void Close()
+        {
+            connection.Close();
+        }
+
         public MacAddress QueryMacAddressByPrefix(string prefix)
         {
             string TableName = "MacAddresses";
@@ -42,6 +47,36 @@ namespace MacFastLookup
                 }
             }
             return null;
+        }
+
+        private string QuerySingleColumn(string tableName, string columnName)
+        {
+            string result = null;
+
+            using (SQLiteConnection connection = new SQLiteConnection(connectionString))
+            {
+                connection.Open();
+
+                string query = $"SELECT {columnName} FROM {tableName} LIMIT 1";
+
+                using (SQLiteCommand command = new SQLiteCommand(query, connection))
+                {
+                    using (SQLiteDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            result = reader[columnName].ToString();
+                        }
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public string QueryVersion()
+        {
+            return QuerySingleColumn("Config", "Version");
         }
     }
 }
