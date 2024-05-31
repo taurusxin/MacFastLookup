@@ -85,6 +85,8 @@ namespace MacFastLookup
 
         private async void button1_Click(object sender, EventArgs e)
         {
+            button1.Enabled = false;
+            button1.Text = "Checking...";
             string LatestVersion = await httpHelper.GetAsync(Global.config.CheckUpdateUrl);
             if (LatestVersion == null)
             {
@@ -117,6 +119,8 @@ namespace MacFastLookup
                     MessageBox.Show("You are using the latest version of database.", "Infomation", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+            button1.Enabled = true;
+            button1.Text = "Check";
         }
     }
 }
